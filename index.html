@@ -1,1 +1,318 @@
 
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Subscribe Flowers — Home</title>
+<style>
+  :root{
+    --bg:#0b1022; --panel:#0f1a36; --ink:#e7ecf5; --muted:#9fb1d1;
+    --line:#ffffff22; --rose:#f43f5e; --cyan:#22d3ee; --ok:#10b981; --warn:#f59e0b;
+    --shadow:0 20px 45px rgba(0,0,0,.45); --r:16px;
+  }
+  *{box-sizing:border-box} html,body{margin:0;background:radial-gradient(1200px 900px at 10% -10%, #1b2a54 0%, var(--bg) 50%);}
+  body{color:var(--ink);font:16px/1.6 system-ui,Segoe UI,Roboto,Helvetica,Arial}
+  a{color:inherit;text-decoration:none}
+  .container{width:min(1100px,92%);margin:0 auto}
+
+  /* Header + Hamburger */
+  .navwrap{position:sticky;top:0;z-index:50;background:#0b1022cc;backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
+  nav{display:flex;align-items:center;justify-content:space-between;padding:12px 0}
+  .brand{display:flex;align-items:center;gap:10px;font-weight:800}
+  .logo{width:36px;height:36px;border-radius:12px;background:conic-gradient(from 90deg,var(--rose),#fb7185,var(--cyan));box-shadow:0 8px 30px rgba(244,63,94,.45)}
+  .menu{display:flex;gap:8px;align-items:center}
+  .menu a,.menu button{padding:10px 12px;border-radius:10px;border:1px solid transparent;background:transparent}
+  .cta{background:linear-gradient(135deg,var(--rose),#fb7185);box-shadow:0 8px 28px rgba(244,63,94,.35)}
+  .cart-btn{position:relative;border:1px solid var(--line);background:#0d1730}
+  .badge{position:absolute;top:-6px;right:-6px;background:var(--ok);color:#021a14;font-size:12px;padding:2px 7px;border-radius:999px;font-weight:800}
+
+  .hamb{display:none;gap:8px;align-items:center}
+  .hamb button{border:1px solid var(--line);background:#0d1730;border-radius:12px;padding:10px}
+  @media (max-width:860px){
+    .menu{display:none}
+    .hamb{display:flex}
+    .mobile{position:fixed;inset:56px 0 auto 0;background:#0b1022;display:none;border-bottom:1px solid var(--line)}
+    .mobile a{display:block;padding:14px 18px;border-top:1px solid var(--line)}
+    .mobile.show{display:block}
+  }
+
+  /* Hero */
+  header.hero{padding:80px 0 50px;position:relative}
+  .halo{position:absolute;inset:0;pointer-events:none;filter:blur(26px);
+    background:radial-gradient(600px 420px at 70% 25%, #fb718560 0%, transparent 55%),
+               radial-gradient(800px 520px at 8% 70%, #22d3ee5a 0%, transparent 60%);
+  }
+  .split{display:grid;grid-template-columns:1.2fr 1fr;gap:36px;align-items:center}
+  @media (max-width:900px){.split{grid-template-columns:1fr}}
+  .panel{background:linear-gradient(180deg,#0d1730,#0a142a);border:1px solid var(--line);border-radius:var(--r);box-shadow:var(--shadow)}
+  .hero-copy{padding:28px}
+  h1{margin:0 0 10px;font-size:42px;line-height:1.12}
+  p.lead{margin:0 0 18px;color:var(--muted)}
+  .actions{display:flex;gap:10px;flex-wrap:wrap}
+  .btn{display:inline-flex;align-items:center;gap:8px;padding:12px 16px;border-radius:12px;border:1px solid var(--line);background:#0d1730}
+  .btn.primary{border:0;background:linear-gradient(135deg,var(--rose),#fb7185)}
+  .art{min-height:340px;display:grid;place-items:center;padding:18px}
+  .bouquet{width:100%;max-width:520px;aspect-ratio:1;border-radius:26px;position:relative;overflow:hidden;border:1px solid var(--line);background:linear-gradient(180deg,#0e1833,#0b1022)}
+  .orb{position:absolute;width:130px;height:130px;border-radius:50%}
+  .orb:nth-child(1){top:12%;left:14%;background:radial-gradient(circle at 30% 30%, #7f1d1d, #ef4444)}
+  .orb:nth-child(2){top:52%;left:58%;background:radial-gradient(circle at 30% 30%, #1e3a8a, #60a5fa)}
+  .orb:nth-child(3){top:65%;left:26%;background:radial-gradient(circle at 30% 30%, #065f46, #34d399)}
+  .orb:nth-child(4){top:22%;left:72%;background:radial-gradient(circle at 30% 30%, #831843, #f472b6)}
+  .orb:nth-child(5){top:40%;left:36%;background:radial-gradient(circle at 30% 30%, #92400e, #f59e0b)}
+
+  /* Feature cards */
+  .features{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin:34px 0}
+  .card{padding:18px;border-radius:var(--r);border:1px solid var(--line);background:#0d1730}
+  .kicker{font-size:12px;letter-spacing:.18em;color:var(--muted);text-transform:uppercase}
+  @media (max-width:900px){.features{grid-template-columns:1fr}}
+
+  /* Drawer Cart */
+  .drawer{position:fixed;inset:0 0 0 auto;width:min(430px,92%);translate:100% 0;background:#0d1730;border-left:1px solid var(--line);box-shadow:var(--shadow);transition:translate .25s ease;z-index:80}
+  .drawer.show{translate:0 0}
+  .drawer header{display:flex;align-items:center;justify-content:space-between;padding:14px;border-bottom:1px solid var(--line)}
+  .items{max-height:60vh;overflow:auto}
+  .row{display:grid;grid-template-columns:56px 1fr auto;gap:12px;padding:12px 14px;border-bottom:1px dashed var(--line)}
+  .thumb{width:56px;height:56px;border-radius:12px;border:1px solid var(--line);display:grid;place-items:center;background:#0b1022}
+  .qty{display:flex;align-items:center;gap:8px}
+  .qty button{width:28px;height:28px;border-radius:8px;border:1px solid var(--line);background:#0b1022;color:var(--ink)}
+  .totals{padding:14px;border-top:1px solid var(--line)}
+  .checkout{display:flex;gap:10px}
+
+  /* Chatbot */
+  .chat-fab{position:fixed;right:16px;bottom:16px;z-index:75}
+  .chat-fab button{border:0;border-radius:999px;padding:12px 14px;background:linear-gradient(135deg,#1d4ed8,#60a5fa);color:white;box-shadow:0 12px 40px rgba(59,130,246,.45)}
+  .chat{position:fixed;right:16px;bottom:76px;width:min(420px,94vw);border:1px solid var(--line);border-radius:16px;background:#0d1730;box-shadow:var(--shadow);display:none;z-index:76;overflow:hidden}
+  .chat.show{display:grid;grid-template-rows:auto 1fr auto;height:520px}
+  .chat header{display:flex;align-items:center;justify-content:space-between;padding:10px 12px;border-bottom:1px solid var(--line)}
+  .pane{padding:12px;overflow:auto}
+  .msg{max-width:82%;margin:8px 0;padding:10px 12px;border-radius:12px;border:1px solid var(--line)}
+  .msg.user{margin-left:auto;background:#0b1022}
+  .msg.bot{background:#0a142a}
+  .chat form{display:flex;gap:8px;padding:10px;border-top:1px solid var(--line)}
+  .chat input{flex:1;padding:12px;border-radius:12px;border:1px solid var(--line);background:#0b1022;color:var(--ink)}
+  .chat .send{padding:12px 16px;border-radius:12px;background:linear-gradient(135deg,var(--rose),#fb7185);border:0}
+
+  /* Footer */
+  footer{margin-top:50px;border-top:1px solid var(--line)}
+  .foot{display:grid;grid-template-columns:1fr auto;gap:16px;padding:18px 0;color:#c6d2ea}
+  .foot a{opacity:.9} .foot a:hover{opacity:1;text-decoration:underline}
+</style>
+</head>
+<body>
+  <div class="navwrap">
+    <nav class="container">
+      <div class="brand"><div class="logo"></div><span>Subscribe Flowers</span></div>
+      <div class="menu" id="menu">
+        <a href="index.html">Home</a>
+        <a href="flowers.html">Flowers</a>
+        <a href="contact.html">Contact</a>
+        <button class="cta" onclick="location.href='flowers.html'">Shop Roses</button>
+        <button class="cart-btn" id="openCart">🛒 Cart <span class="badge" id="cartCount">0</span></button>
+      </div>
+      <div class="hamb">
+        <button id="hambBtn" aria-label="Open menu">☰</button>
+        <button class="cart-btn" id="openCartSm">🛒<span class="badge" id="cartCountSm">0</span></button>
+      </div>
+    </nav>
+    <div class="mobile" id="mobileMenu">
+      <a href="index.html">Home</a>
+      <a href="flowers.html">Flowers</a>
+      <a href="contact.html">Contact</a>
+      <a href="flowers.html">Shop Roses</a>
+    </div>
+  </div>
+
+  <header class="hero">
+    <div class="halo"></div>
+    <div class="container split">
+      <div class="panel hero-copy">
+        <div class="kicker">Single-Stem • Premium Roses</div>
+        <h1>Exactly the number of roses you want.</h1>
+        <p class="lead">From 1 to 1,000 stems — pick varieties, set quantities, and we’ll pack same-day for peak freshness.</p>
+        <div class="actions">
+          <a class="btn primary" href="flowers.html">Browse 20 Top Roses</a>
+          <a class="btn" href="#how">How it works</a>
+          <span class="btn" style="opacity:.85">Freshness Guarantee</span>
+        </div>
+      </div>
+      <div class="panel art">
+        <div class="bouquet">
+          <div class="orb"></div><div class="orb"></div><div class="orb"></div><div class="orb"></div><div class="orb"></div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <section class="container" id="how">
+    <div class="features">
+      <div class="card"><h3>Pick your rose</h3><p class="lead">Top varieties like Red Naomi!, Freedom, and White O’Hara — with transparent per-stem pricing.</p></div>
+      <div class="card"><h3>Set any quantity</h3><p class="lead">Type the exact number. We bundle securely for courier or ground delivery.</p></div>
+      <div class="card"><h3>We pack today</h3><p class="lead">Cut-to-order freshness. Replacements for any quality issues, no questions asked.</p></div>
+    </div>
+  </section>
+
+  <!-- Drawer Cart -->
+  <aside class="drawer" id="drawer">
+    <header><strong>Your Cart</strong><button class="btn" id="closeCart">Close</button></header>
+    <div class="items" id="cartItems"></div>
+    <div class="totals">
+      <div style="display:flex;justify-content:space-between;margin-bottom:8px">
+        <span>Subtotal</span><strong id="subtotal">$0.00</strong>
+      </div>
+      <div class="checkout">
+        <button class="btn" id="keepShop">Continue Shopping</button>
+        <button class="btn primary" id="checkoutBtn">Checkout</button>
+      </div>
+    </div>
+  </aside>
+
+  <!-- Chatbot -->
+  <div class="chat-fab"><button id="chatOpen">💬 Chat</button></div>
+  <div class="chat" id="chatBox" aria-live="polite">
+    <header><strong>Flower Assistant</strong><button class="btn" id="chatClose">Close</button></header>
+    <div class="pane" id="chatPane">
+      <div class="msg bot">Hi! Ask me about rose varieties, meanings, care, or bulk orders.</div>
+    </div>
+    <form id="chatForm">
+      <input id="chatInput" placeholder="Ask about roses, freshness, care…" autocomplete="off" />
+      <button class="send">Send</button>
+    </form>
+  </div>
+
+  <!-- Footer -->
+  <footer>
+    <div class="container foot">
+      <div>© <span id="yr"></span> Subscribe Flowers</div>
+      <div>
+        <a href="#" id="openTerms">Terms & Agreements</a> •
+        <a href="#" id="openPolicy">Privacy Policy</a> •
+        <a href="contact.html">Contact</a>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Terms & Policy Modals -->
+  <dialog id="termsDlg" style="max-width:min(720px,92vw);border:none;border-radius:16px;background:#0d1730;color:var(--ink);padding:0">
+    <div style="padding:18px;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;align-items:center">
+      <strong>Terms & Agreements</strong><button class="btn" onclick="termsDlg.close()">Close</button>
+    </div>
+    <div style="padding:16px">
+      <p>By purchasing single-stem flowers, you agree to our freshness guarantee, shipping conditions, and replacement policy.</p>
+      <ul>
+        <li>Orders cut and packed the same day where possible.</li>
+        <li>Damaged stems replaced or refunded for the stem price.</li>
+        <li>Bulk orders may have lead times; we’ll confirm by email.</li>
+      </ul>
+    </div>
+  </dialog>
+  <dialog id="policyDlg" style="max-width:min(720px,92vw);border:none;border-radius:16px;background:#0d1730;color:var(--ink);padding:0">
+    <div style="padding:18px;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;align-items:center">
+      <strong>Privacy Policy</strong><button class="btn" onclick="policyDlg.close()">Close</button>
+    </div>
+    <div style="padding:16px">
+      <p>We only use your data to fulfill orders and provide support. We do not sell or share personal data.</p>
+    </div>
+  </dialog>
+
+<script>
+/* ---------- Shared state ---------- */
+const CART_KEY='sf_cart_v1';
+const getCart=()=>JSON.parse(localStorage.getItem(CART_KEY)||'[]');
+const saveCart=(c)=>localStorage.setItem(CART_KEY,JSON.stringify(c));
+const money=n=>`$${(Math.round(n*100)/100).toFixed(2)}`;
+const subtotal=cart=>cart.reduce((s,i)=>s+i.price*i.qty,0);
+
+/* ---------- Header/Hamburger ---------- */
+const hambBtn=document.getElementById('hambBtn');
+const mobileMenu=document.getElementById('mobileMenu');
+if(hambBtn){hambBtn.addEventListener('click',()=>mobileMenu.classList.toggle('show'));}
+
+/* ---------- Cart Drawer (shared across pages) ---------- */
+const drawer=document.getElementById('drawer');
+const openCart=document.getElementById('openCart');
+const openCartSm=document.getElementById('openCartSm');
+const closeCart=document.getElementById('closeCart');
+const cartItems=document.getElementById('cartItems');
+const subtotalEl=document.getElementById('subtotal');
+const cartCount=document.getElementById('cartCount');
+const cartCountSm=document.getElementById('cartCountSm');
+
+function refreshCartUI(){
+  const cart=getCart();
+  const count=cart.reduce((s,i)=>s+i.qty,0);
+  if(cartCount) cartCount.textContent=count;
+  if(cartCountSm) cartCountSm.textContent=count;
+  if(cartItems) cartItems.innerHTML = cart.length? cart.map((item,idx)=>`
+    <div class="row">
+      <div class="thumb">${item.sku.slice(0,2)}</div>
+      <div>
+        <div style="font-weight:700">${item.name}</div>
+        <div style="font-size:13px;color:#9fb1d1">${item.color} • ${money(item.price)}/stem</div>
+        <div class="qty" style="margin-top:6px">
+          <button data-i="${idx}" data-act="dec">−</button>
+          <div>${item.qty}</div>
+          <button data-i="${idx}" data-act="inc">+</button>
+          <button class="btn" data-i="${idx}" data-act="rm" style="margin-left:8px">Remove</button>
+        </div>
+      </div>
+      <div style="font-weight:700">${money(item.price*item.qty)}</div>
+    </div>`).join(''): `<div style="padding:16px;color:#9fb1d1">Your cart is empty.</div>`;
+  if(subtotalEl) subtotalEl.textContent=money(subtotal(cart));
+}
+refreshCartUI();
+
+function openDrawer(){drawer.classList.add('show');}
+function closeDrawer(){drawer.classList.remove('show');}
+openCart?.addEventListener('click',openDrawer);
+openCartSm?.addEventListener('click',openDrawer);
+closeCart?.addEventListener('click',closeDrawer);
+document.getElementById('keepShop')?.addEventListener('click',()=>{closeDrawer();location.href='flowers.html';});
+document.getElementById('checkoutBtn')?.addEventListener('click',()=>{alert('Demo checkout — integrate your gateway here.');});
+
+cartItems?.addEventListener('click',e=>{
+  const btn=e.target.closest('button'); if(!btn) return;
+  const i=+btn.dataset.i; const act=btn.dataset.act;
+  const cart=getCart(); if(!cart[i]) return;
+  if(act==='inc') cart[i].qty++;
+  if(act==='dec') cart[i].qty=Math.max(1,cart[i].qty-1);
+  if(act==='rm') cart.splice(i,1);
+  saveCart(cart); refreshCartUI();
+});
+
+/* ---------- Chatbot (lightweight, rule-based) ---------- */
+const chatOpen=document.getElementById('chatOpen');
+const chatClose=document.getElementById('chatClose');
+const chatBox=document.getElementById('chatBox');
+const chatPane=document.getElementById('chatPane');
+const chatForm=document.getElementById('chatForm');
+const chatInput=document.getElementById('chatInput');
+
+chatOpen?.addEventListener('click',()=>chatBox.classList.toggle('show'));
+chatClose?.addEventListener('click',()=>chatBox.classList.remove('show'));
+chatForm?.addEventListener('submit',e=>{
+  e.preventDefault();
+  const q=(chatInput.value||'').trim(); if(!q) return;
+  chatPane.insertAdjacentHTML('beforeend',`<div class="msg user">${q}</div>`);
+  chatInput.value='';
+  const lower=q.toLowerCase();
+  let a="I'm here to help with varieties, quantities, and care tips.";
+  if(lower.includes('meaning')||lower.includes('color'))
+    a="Red = love, White = purity, Pink = admiration, Yellow = friendship, Orange = enthusiasm.";
+  else if(lower.includes('care')||lower.includes('last'))
+    a="Trim stems at an angle, use clean vase + fresh water, keep cool and away from direct sun. Change water every 2 days.";
+  else if(lower.includes('bulk')||lower.includes('event'))
+    a="For events, set your exact stem count on the Flowers page, add to cart, and we can coordinate delivery timing.";
+  else if(lower.includes('shipping'))
+    a="We pack same-day when possible. Transit is temperature-controlled; damaged stems are replaced.";
+  chatPane.insertAdjacentHTML('beforeend',`<div class="msg bot">${a}</div>`);
+  chatPane.scrollTop=chatPane.scrollHeight;
+});
+
+/* ---------- Footer modals ---------- */
+const yr=document.getElementById('yr'); if(yr) yr.textContent=new Date().getFullYear();
+document.getElementById('openTerms')?.addEventListener('click',e=>{e.preventDefault();termsDlg.showModal();});
+document.getElementById('openPolicy')?.addEventListener('click',e=>{e.preventDefault();policyDlg.showModal();});
+</script>
+</body>
+</html>
